@@ -1,0 +1,33 @@
+{
+  "name": "hoge",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "connect-ssi": "^1.1.0",
+    "gulp": "^3.9.0",
+    "gulp-autoprefixer": "^3.1.0",
+    "gulp-cached": "^1.1.0",
+    "gulp-connect": "^2.2.0",
+    "gulp-convert-encoding": "0.0.3",
+    "gulp-cssmin": "^0.1.7",
+    "gulp-header": "^1.7.1",
+    "gulp-html-validator": "0.0.5",
+    "gulp-iconv": "0.0.1",
+    "gulp-intercept": "^0.1.0",
+    "gulp-jade": "^1.1.0",
+    "gulp-load-plugins": "^0.10.0",
+    "gulp-plumber": "^1.0.1",
+    "gulp-prettify": "^0.3.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-replace": "^0.5.4",
+    "gulp-sass": "^2.0.4",
+    "gulp-uglify": "^1.4.1",
+    "node-notifier": "^4.3.1"
+  }
+}
