@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "connect-ssi": "^1.1.0",
+    "browser-sync": "^2.11.1",
     "gulp": "^3.9.0",
     "gulp-autoprefixer": "^3.1.0",
     "gulp-cached": "^1.1.0",
@@ -28,6 +28,7 @@
     "gulp-replace": "^0.5.4",
     "gulp-sass": "^2.0.4",
     "gulp-uglify": "^1.4.1",
+    "gulp-notify": "^2.2.0",
     "node-notifier": "^4.3.1"
   }
 }

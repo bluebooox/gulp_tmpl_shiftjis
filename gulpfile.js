@@ -12,7 +12,8 @@ var replaces = require('gulp-replace');
 var prettify = require('gulp-prettify');
 var cache = require('gulp-cached');
 var htmlv = require( 'gulp-html-validator' );
-
+var browserSync = require('browser-sync');
+var notify = require('gulp-notify');
 var errorHandler = function(error) {
   var err = error;
   notifier.notify({
@@ -35,7 +36,14 @@ gulp.task('sass', function () {
     .pipe(cssmin())
     .pipe(rename({suffix: '.min'}))
     .pipe(convertEncoding({to: "shift_jis"}))
-    .pipe(gulp.dest('./dest/css/'));
+    .pipe(gulp.dest('./dest/css/'))
+    .pipe(browserSync.stream())
+    .pipe(notify({
+            title: 'Sassをコンパイルしました。',
+            message: new Date(),
+            sound: 'Glass'
+            // icon: 'logo.gif'
+     }));
 });
 
 gulp.task('jade', function () {
@@ -50,13 +58,20 @@ gulp.task('jade', function () {
     .pipe(convertEncoding({to: "shift_jis"}))
     .pipe(gulp.dest('./dest/'))
     // .on('end', reload);
+    .pipe(notify({
+            title: 'Jadeをコンパイルしました。',
+            message: new Date(),
+            sound: 'Glass'
+            // icon: 'logo.gif'
+     }));
 });
 
 // html validation
 gulp.task( 'valid', function () {
   gulp.src( './dest/**/*.html' )
   .pipe( htmlv() )
-  .pipe( gulp.dest( './dest/**/*.html') );
+  .pipe( gulp.dest( './dest/**/*.html') )
+  .pipe(browserSync.stream());
 });
 
 
@@ -67,7 +82,8 @@ gulp.task('compress', function() {
     }))
     .pipe(uglify())
     .pipe(rename({suffix: '.min'}))
-    .pipe(gulp.dest('./dest/common/js/'));
+    .pipe(gulp.dest('./dest/common/js/'))
+    .pipe(browserSync.stream());
 });
 
 
@@ -76,6 +92,11 @@ gulp.task('default', ['sass', 'jade', 'compress']);
 
 //watch
 gulp.task('watch', function(){
+ browserSync.init({
+     server: {
+         baseDir: "./dest/"
+     }
+ });
     var w_sass = gulp.watch('./src/sass/*.scss', ['sass']);
     var w_jade = gulp.watch('./src/jade/**/*.jade', ['jade']);
     var w_uglify = gulp.watch('./src/js/*.js', ['compress']);
