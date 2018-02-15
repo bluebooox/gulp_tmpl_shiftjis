@@ -14,6 +14,12 @@ var cache = require('gulp-cached');
 var htmlv = require( 'gulp-html-validator' );
 var browserSync = require('browser-sync');
 var notify = require('gulp-notify');
+var fs = require('fs'),
+path = require('path'),
+iconvLite = require('iconv-lite'),
+util = require('util'),
+jschardet = require('jschardet'),
+url = require('url');
 var errorHandler = function(error) {
   var err = error;
   notifier.notify({
@@ -93,9 +99,32 @@ gulp.task('default', ['sass', 'jade', 'compress']);
 //watch
 gulp.task('watch', function(){
  browserSync.init({
-    port: 8888,
+    port: 8888
      server: {
-         baseDir: "./dest/"
+         baseDir: "./dest/",
+         middleware: [
+            function (req, res, next) {
+                if (/\.html$/.test(req.url) || req.url === '/') {
+                    var absPath='';
+                    if(req.url === '/'){
+                        absPath = path.join(__dirname, './dest/','index.html' );
+                    }else{
+                        absPath = path.join(__dirname, './dest/', req.url);
+                    }
+                    var data = fs.readFileSync(absPath);
+                    var charset = jschardet.detect(data);
+                    if (charset.encoding == 'windows-1252' || charset.encoding == 'Shift_JIS') {
+                        var source = iconvLite.decode(new Buffer(data, 'binary'), "Shift_JIS");
+                        res.setHeader("Content-Type", "text/html; charset=UTF-8");
+                        res.end(source);
+                    } else {
+                        next();
+                    }
+                } else {
+                    next();
+                }
+            }
+        ]
      }
  });
     var w_sass = gulp.watch('./src/sass/*.scss', ['sass']);
