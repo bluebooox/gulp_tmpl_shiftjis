@@ -6,7 +6,7 @@ var cssmin = require('gulp-cssmin');
 var rename = require('gulp-rename');
 var sass = require('gulp-sass');
 var uglify = require('gulp-uglify');
-var jade = require('gulp-jade');
+var pug = require('gulp-pug');
 var convertEncoding = require('gulp-convert-encoding');
 var replaces = require('gulp-replace');
 var prettify = require('gulp-prettify');
@@ -52,20 +52,20 @@ gulp.task('sass', function () {
      }));
 });
 
-gulp.task('jade', function () {
-  gulp.src(['./src/jade/*.jade','./src/jade/**/*.jade','!./src/jade/**/_*.jade'])
+gulp.task('pug', function () {
+  gulp.src(['./src/pug/*.pug','./src/pug/**/*.pug','!./src/pug/**/_*.pug'])
   .pipe( $.plumber({
   errorHandler: errorHandler
    }))
    .pipe(cache())
-   .pipe(jade({
+   .pipe(pug({
     pretty: true
    }))
     .pipe(convertEncoding({to: "shift_jis"}))
     .pipe(gulp.dest('./dest/'))
     // .on('end', reload);
     .pipe(notify({
-            title: 'Jadeをコンパイルしました。',
+            title: 'pugをコンパイルしました。',
             message: new Date(),
             sound: 'Glass'
             // icon: 'logo.gif'
@@ -92,14 +92,12 @@ gulp.task('compress', function() {
     .pipe(browserSync.stream());
 });
 
-
-gulp.task('default', ['sass', 'jade', 'compress']);
-
+gulp.task('default', ['sass', 'pug', 'compress']);
 
 //watch
 gulp.task('watch', function(){
  browserSync.init({
-    port: 8888
+    port: 8888,
      server: {
          baseDir: "./dest/",
          middleware: [
@@ -128,15 +126,15 @@ gulp.task('watch', function(){
      }
  });
     var w_sass = gulp.watch('./src/sass/*.scss', ['sass']);
-    var w_jade = gulp.watch('./src/jade/**/*.jade', ['jade']);
+    var w_pug = gulp.watch('./src/pug/**/*.pug', ['pug']);
     var w_uglify = gulp.watch('./src/js/*.js', ['compress']);
 
     w_sass.on('change', function(event){
         console.log('CSS File ' + event.path + ' was ' + event.type + ', running task sass...');
     });
 
-    w_jade.on('change', function(event){
-        console.log('Jade File ' + event.path + ' was ' + event.type + ', running task jade...');
+    w_pug.on('change', function(event){
+        console.log('pug File ' + event.path + ' was ' + event.type + ', running task pug...');
     });
 
     w_uglify.on('change', function(event){
