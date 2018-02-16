@@ -5,6 +5,7 @@ var notifier = require('node-notifier');
 var cssmin = require('gulp-cssmin');
 var rename = require('gulp-rename');
 var sass = require('gulp-sass');
+var data = require('gulp-data');
 var uglify = require('gulp-uglify');
 var pug = require('gulp-pug');
 var convertEncoding = require('gulp-convert-encoding');
@@ -53,12 +54,20 @@ gulp.task('sass', function () {
 });
 
 gulp.task('pug', function () {
-  gulp.src(['./src/pug/*.pug','./src/pug/**/*.pug','!./src/pug/**/_*.pug'])
+    var locals = {
+        'site': JSON.parse(fs.readFileSync( './src/pug/_data/site.json'))
+      }
+  gulp.src(['./src/pug/*.pug','./src/pug/**/*.pug','!./src/pug/**/_*.pug','!./src/pug/_**/_*.pug'])
   .pipe( $.plumber({
   errorHandler: errorHandler
    }))
+   .pipe(data(function(file) {
+    locals.relativePath = path.relative(file.base, file.path.replace(/.pug$/, '.html'));
+      return locals;
+  }))
    .pipe(cache())
    .pipe(pug({
+    locals: locals,
     pretty: true
    }))
     .pipe(convertEncoding({to: "shift_jis"}))
@@ -111,7 +120,7 @@ gulp.task('watch', function(){
                     }
                     var data = fs.readFileSync(absPath);
                     var charset = jschardet.detect(data);
-                    if (charset.encoding == 'windows-1252' || charset.encoding == 'Shift_JIS') {
+                    if (charset.encoding == 'windows-1252' || charset.encoding == 'SHIFT_JIS') {
                         var source = iconvLite.decode(new Buffer(data, 'binary'), "Shift_JIS");
                         res.setHeader("Content-Type", "text/html; charset=UTF-8");
                         res.end(source);
